@@ -1,0 +1,9 @@
+.popup__submit-button_type_delete-card {
+    margin: 36px 36px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 550px) {
+    .popup__submit-button_type_delete-card {
+        margin: 0 22px 25px;
+    }
+}

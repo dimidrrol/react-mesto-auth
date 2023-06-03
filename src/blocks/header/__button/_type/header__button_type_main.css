@@ -1,0 +1,9 @@
+.header__button_type_main {
+    color: #A9A9A9;
+}
+
+@media screen and (max-width: 550px) and (min-width: 320px) {
+    .header__button_type_main {
+        margin-bottom: 27px;
+    }
+}

@@ -1,0 +1,5 @@
+.element__like-box {
+    flex-direction: column;
+    max-width: 22px;
+    max-height: 35px;
+}

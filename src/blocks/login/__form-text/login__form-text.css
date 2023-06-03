@@ -1,0 +1,17 @@
+.login__form-text {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #CCCCCC;
+    border: 0;
+    border-bottom: 2px solid #CCCCCC;
+    background-color: black;
+}
+
+.login__form-text:focus {
+    outline: none;
+    color: #FFFFFF;
+    font-weight: 500;
+}

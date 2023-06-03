@@ -1,0 +1,15 @@
+.profile__change-avatar-button {
+    display: flex;
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 50%;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-image: url(../../../images/Avatar-hover.svg);
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    align-self: center;
+}

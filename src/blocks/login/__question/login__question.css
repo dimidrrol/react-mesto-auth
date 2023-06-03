@@ -1,0 +1,16 @@
+.login__question {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #FFFFFF;
+    min-width: 100%;
+    margin: 15px auto 0;
+}
+
+@media screen and (max-width: 550px) and (min-width: 320px) {
+    .login__question {
+        max-width: 260px;
+    }
+}

@@ -1,0 +1,11 @@
+.header__info {
+    display: flex;
+    gap: 24px;
+}
+
+@media screen and (max-width: 550px) and (min-width: 320px) {
+    .header__info {
+        flex-direction: column;
+        gap: 3px;
+    }
+}
