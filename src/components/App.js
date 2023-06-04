@@ -67,13 +67,13 @@ function App() {
   }
 
   function handleLogin(password, email) {
-    setLoggedIn(true);
-    getMainPage();
     authorize(password, email)
       .then((data) => {
         if (data.token) {
           setUserEmail(email);
           navigate('/', { replace: true });
+          setLoggedIn(true);
+          getMainPage();
         }
       })
       .catch(() => {
