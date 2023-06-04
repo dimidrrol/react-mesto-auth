@@ -2,23 +2,16 @@ import React from 'react';
 import Card from './Card.js';
 import Header from './Header.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
-import { useNavigate } from 'react-router-dom';
 
 function Main(props) {
     const currentUser = React.useContext(CurrentUserContext);
-    const navigate = useNavigate();
-
-    function signOut() {
-        localStorage.removeItem('token');
-        navigate('/sign-in', { replace: true });
-    }
 
     return (
         <>
             <Header>
                 <div className='header__info'>
-                    <h2 className='header__email'>email@mail.com</h2>
-                    <button onClick={signOut} type='button' className='header__button header__button_type_main object-hover'>Выйти</button>                   
+                    <h2 className='header__email'>{props.email}</h2>
+                    <button onClick={props.onSignOut} type='button' className='header__button header__button_type_main object-hover'>Выйти</button>                   
                 </div>
             </Header>
             <main className="main">

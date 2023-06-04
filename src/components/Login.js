@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { authorize } from '../utils/Auth.js';
 import Header from "./Header.js";
 
 
@@ -8,7 +7,7 @@ export default function Login(props) {
     const [formValue, setFormValue] = React.useState({
         email: '',
         password: ''
-    });
+      });
     const navigate = useNavigate();
 
     function handleNavigate() {
@@ -29,15 +28,7 @@ export default function Login(props) {
         if (!formValue.email || !formValue.password) {
             return;
         }
-        authorize(formValue.password, formValue.email)
-            .then((data) => {
-                if (data.token) {
-                    setFormValue({ email: '', password: '' });
-                    props.handleLogin();
-                    navigate('/', { replace: true });
-                }
-            })
-            .catch(err => console.log(err))
+        props.onLogin(formValue.password, formValue.email);
     }
 
     return (

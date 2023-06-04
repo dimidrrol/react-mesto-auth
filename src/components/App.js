@@ -13,7 +13,8 @@ import { AddPlacePopup } from './AddPlacePopup.js';
 import { EditAvatarPopup } from './EditAvatarPopup.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
-import { checkToken } from '../utils/Auth.js';
+import { checkToken, authorize, register } from '../utils/Auth.js';
+import InfoTooltip from './InfoTooltip.js';
 
 function App() {
 
@@ -22,23 +23,32 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [userEmail, setUserEmail] = React.useState('');
+  const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState({ onOpen: false, card: {} });
   const [currentUser, setCurrentUser] = React.useState({});
   const [loggedIn, setLoggedIn] = React.useState(false);
   const navigate = useNavigate();
 
+  function handleNavigate() {
+    navigate('/sign-in', { replace: true });
+    closeAllPopups();
+  }
+
   function handleTokenCheck() {
-    if (localStorage.getItem('token')) {
-      const jwt = localStorage.getItem('token');
+    const jwt = localStorage.getItem('token');
+    if (jwt) {
       checkToken(jwt)
-      .then((res) => {
-        if (res) {
-          setLoggedIn(true);
-          navigate('/', { replace: true });
-        }
-      })
-      .catch(err => console.log(err));
+        .then((res) => {
+          if (res) {
+            setUserEmail(res.data.email);
+            setLoggedIn(true);
+            navigate('/', { replace: true });
+            getMainPage();
+          }
+        })
+        .catch(err => console.log(err));
     }
   }
 
@@ -46,7 +56,7 @@ function App() {
     handleTokenCheck();
   }, [])
 
-  React.useEffect(() => {
+  function getMainPage() {
     Promise.all([api.getUserInfo(), api.getCardsInfo()])
       .then(([{ name, about, avatar, _id }, cardsInfo]) => {
         setCards(cardsInfo);
@@ -54,11 +64,44 @@ function App() {
       }).catch((err) => {
         console.log(err);
       });
-  }, [])
-
-  function handleLogin() {
-    setLoggedIn(true);
   }
+
+  function handleLogin(password, email) {
+    setLoggedIn(true);
+    getMainPage();
+    authorize(password, email)
+      .then((data) => {
+        if (data.token) {
+          setUserEmail(email);
+          navigate('/', { replace: true });
+        }
+      })
+      .catch(() => {
+        setIsRegisterPopupOpen(true);
+        setIsRegisterSuccess(false);
+      });
+  }
+
+  function handleRegister(password, email) {
+    register(password, email)
+      .then((res) => {
+        if (res) {
+          handleRegisterSubmitClick();
+          setIsRegisterSuccess(true);
+          setIsRegisterPopupOpen(true);
+        }
+      })
+      .catch(() => {
+        handleRegisterSubmitClick();
+        setIsRegisterSuccess(false);
+        setIsRegisterPopupOpen(true);
+      });
+  }
+
+  function signOut() {
+    localStorage.removeItem('token');
+    navigate('/sign-in', { replace: true });
+}
 
   function handleUpdateUser(formData) {
     setIsLoading(true);
@@ -177,6 +220,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='root'>
+        <InfoTooltip isOpen={isRegisterPopupOpen} isRegister={isRegisterSuccess} onClose={closeAllPopups} onNavigate={handleNavigate} />
         <EditProfilePopup isLoading={isLoading} onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <AddPlacePopup isLoading={isLoading} onAddCard={handleAddCard} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
         <ImagePopup
@@ -199,9 +243,11 @@ function App() {
               onCardClick={handleCardClick}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
-              cards={cards} />} />
-          <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
-          <Route path="/sign-up" element={<Register isOpen={isRegisterPopupOpen} onRegisterClick={handleRegisterSubmitClick} onClose={closeAllPopups} />} />
+              cards={cards}
+              onSignOut={signOut}
+              email={userEmail} />} />
+          <Route path="/sign-in" element={<Login onLogin={handleLogin} onNavigate={handleNavigate} />} />
+          <Route path="/sign-up" element={<Register onRegister={handleRegister} onNavigate={handleNavigate} />} />
         </Routes>
         <Footer />
       </div>
