@@ -101,7 +101,7 @@ function App() {
   function signOut() {
     localStorage.removeItem('token');
     navigate('/sign-in', { replace: true });
-}
+  }
 
   function handleUpdateUser(formData) {
     setIsLoading(true);
